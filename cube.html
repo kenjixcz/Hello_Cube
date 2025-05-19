@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Rotating Cube 3D</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #222; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // 1. Setup Scene, Camera, dan Renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+            75, // Field of View (derajat)
+            window.innerWidth / window.innerHeight, // Aspect Ratio
+            0.1, // Near clipping plane
+            1000 // Far clipping plane
+        );
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // 2. Buat Geometri Kubus
+        const geometry = new THREE.BoxGeometry(1, 1, 1); // Ukuran sisi kubus (lebar, tinggi, kedalaman)
+
+        // 3. Buat Material (tanpa pencahayaan)
+        // MeshBasicMaterial tidak terpengaruh oleh cahaya
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Warna hijau
+
+        // 4. Buat Mesh (Objek Kubus)
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube); // Tambahkan kubus ke scene
+
+        // 5. Atur Posisi Kamera
+        // Mundurkan kamera agar kubus terlihat
+        camera.position.z = 3;
+
+        // Kecepatan rotasi untuk setiap sumbu
+        const rotationSpeedX = 0.01;
+        const rotationSpeedY = 0.007;
+        const rotationSpeedZ = 0.005;
+
+        // 6. Buat Animation Loop
+        function animate() {
+            requestAnimationFrame(animate); // Minta browser untuk memanggil fungsi ini di frame berikutnya
+
+            // Rotasi "segala arah"
+            // Mengubah rotasi pada sumbu X, Y, dan Z setiap frame
+            cube.rotation.x += rotationSpeedX;
+            cube.rotation.y += rotationSpeedY;
+            cube.rotation.z += rotationSpeedZ;
+
+            // Render scene dari perspektif kamera
+            renderer.render(scene, camera);
+        }
+
+        // 7. Handle Window Resize (opsional tapi bagus untuk responsivitas)
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Mulai animasi
+        animate();
+    </script>
+</body>
+</html>
